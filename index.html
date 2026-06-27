@@ -248,7 +248,7 @@ async function getPy(status){
   status("loading Python runtime...");
   pyReady = (async ()=>{
     const py = await loadPyodide();
-    py.FS.mkdir("/lib");
+    try{py.FS.mkdir("/lib");}catch(e){}
     for(const [path, content] of Object.entries(EMB)){
       const parts = path.split("/").slice(1,-1); let cur="";
       for(const p of parts){ cur+="/"+p; try{py.FS.mkdir(cur);}catch(e){} }
@@ -292,7 +292,7 @@ json.dumps([f.to_dict() for f in fs])
     lines.push("");
     lines.push(`<span class="d">promptguard: ${f.length} issue(s) - ${h} high, ${m} medium, ${l} low</span>`);
     out.innerHTML = lines.join("\n");
-  }catch(e){ st(""); out.innerHTML='<span class="h">error: </span>'+esc(String(e)); }
+  }catch(e){ st(""); out.innerHTML='<span class="h">error: </span>'+esc((e&&e.message)?e.message:String(e)); }
 };
 
 document.getElementById("btn-sh").onclick = async ()=>{
@@ -321,7 +321,7 @@ json.dumps(r.to_dict())
     lines.push("");
     lines.push(`<span class="d">Summary: 1 file, ${r.errors} error(s), ${r.warnings} warning(s).</span>`);
     out.innerHTML = lines.join("\n");
-  }catch(e){ st(""); out.innerHTML='<span class="h">error: </span>'+esc(String(e)); }
+  }catch(e){ st(""); out.innerHTML='<span class="h">error: </span>'+esc((e&&e.message)?e.message:String(e)); }
 };
 </script>
 </body>
